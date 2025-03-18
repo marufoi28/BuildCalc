@@ -1,0 +1,6 @@
+@BuildCalc_HostAddress = http://localhost:5264
+
+GET {{BuildCalc_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
