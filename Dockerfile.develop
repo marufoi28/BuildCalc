@@ -1,0 +1,18 @@
+FROM node:18 AS node_build
+
+WORKDIR /app
+
+COPY ./src/vue/package*.json ./vue
+COPY ./src/vue/vue.config.js ./vue
+RUN npm install
+
+COPY ./src/vue/ ./vue/
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet_build
+
+WORKDIR /app
+
+COPY ./src/BuildCalc.csproj ./
+RUN dotnet restore
+
+COPY ./src ./

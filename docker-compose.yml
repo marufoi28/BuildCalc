@@ -1,0 +1,30 @@
+services:
+  buildcalc_web:
+    container_name: buildcalc_web
+    build:
+      context: .
+      dockerfile: Dockerfile.develop
+    ports:
+      - 8080:8080
+      - 5100:5100
+    depends_on:
+      - buildcalc_db
+    volumes:
+      - ./src:/app
+    tty:
+     true
+    
+  buildcalc_db:
+    container_name: buildcalc_db
+    image: mysql:8.4
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: buildcalc_dev
+      MYSQL_USER: buildcalc
+      MYSQL_PASSWORD: buildcalc
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+      - ./.db/data:/var/lib/mysql
+  
