@@ -1,4 +1,4 @@
-namespace BuildCalc;
+namespace BuildCalc.Models;
 
 public class WeatherForecast
 {
