@@ -36,8 +36,8 @@ builder.Services.AddCors(options =>
 }); 
  
 // DBコンテキストの設定 
-builder.Services.AddDbContext<MyContext>(options => options.UseMySql( 
-    builder.Configuration.GetConnectionString("MyContext"), new MySqlServerVersion(new Version(8, 4, 2)))); 
+// builder.Services.AddDbContext<MyContext>(options => options.UseMySql( 
+//     builder.Configuration.GetConnectionString("MyContext"), new MySqlServerVersion(new Version(8, 4, 2)))); 
  
 builder.Services.AddControllers(); 
 builder.Services.AddEndpointsApiExplorer(); 
@@ -61,11 +61,6 @@ app.UseEndpoints(endpoints =>
 { 
     // APIコントローラーを明示的にマッピング 
     endpoints.MapControllers(); 
-     
-    // 追加のルートも設定 
-    endpoints.MapControllerRoute( 
-        name: "default", 
-        pattern: "api/{controller=Home}/{action=Index}/{id?}"); 
 }); 
  
 // 開発環境の設定 
