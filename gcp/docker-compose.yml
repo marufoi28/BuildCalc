@@ -1,0 +1,10 @@
+services:
+  docker_gcloud_cli:
+    build: 
+      context: .
+      dockerfile: Dockerfile.Gcloud
+    container_name: "docker_gcloud_cli"
+    platform: linux/x86_64
+    volumes:
+      - ./gcloud:/root/.config/gcloud
+    tty: true
