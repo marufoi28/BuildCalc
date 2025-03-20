@@ -5,6 +5,7 @@ WORKDIR /app/vue
 
 # Vue.jsの依存関係をインストール
 COPY ./src/vue/package.json /app/vue/
+COPY ./src/vue/tsconfig.json /app/vue/
 RUN npm install
 RUN npm run build
 
