@@ -4,12 +4,11 @@ FROM node:22.9-bookworm-slim as node22
 WORKDIR /app/vue
 
 # Vue.jsの依存関係をインストール
-# COPY ./src/vue/package.json /app/vue/
-# COPY ./src/vue/tsconfig.json /app/vue/
 COPY ./src/vue /app/
 
 RUN npm install
 RUN npm run build
+RUN ls -al /app/vue/dist
 
 # ステージ2: .NET SDK環境の準備
 FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
