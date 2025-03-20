@@ -9,7 +9,7 @@ builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8080);
+    options.ListenAnyIP(8080); // 8080ポートでリクエストを受け付け
 });
 
 builder.Services.AddCors(options =>
@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add services to the container.
+// DBコンテキストの設定
 builder.Services.AddDbContext<MyContext>(options => options.UseMySql(
     builder.Configuration.GetConnectionString("MyContext"), new MySqlServerVersion(new Version(8, 4, 2))));
 
@@ -46,12 +46,12 @@ builder.Services.AddSwaggerGen();
 // SPAの設定
 builder.Services.AddSpaStaticFiles(options =>
 {
-    options.RootPath = "vue/dist";
+    options.RootPath = "vue/dist"; // ビルドされたVueファイルを格納するパス
 });
 
 var app = builder.Build();
 
-// 本番環境でVue開発サーバーを起動しないように、条件を分ける
+// 本番環境でVue開発サーバーを起動しないように条件を分ける
 if (app.Environment.IsDevelopment())
 {
     // 開発環境でVue開発サーバーを起動
@@ -69,35 +69,19 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseSpaStaticFiles();
+    app.UseSpaStaticFiles(); // 本番環境で静的ファイルを提供
 }
 
-// 重要：APIへのリクエストのためにCORSを使用
+// CORSの設定
 app.UseCors("AllowVueApp");
 
-// デバッグ用のログ
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"Request Path: {context.Request.Path}");
-    await next();
-    Console.WriteLine($"Response Status: {context.Response.StatusCode}");
-});
-
-// ルーティングの設定
+// APIルーティング設定（/apiで始まるリクエストをAPIに渡す）
 app.UseRouting();
-app.UseAuthorization();
 
-// APIルートを最初に処理するために、MapControllersをUseSpaより前に配置
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
+// APIリクエストのマッピング
 app.MapControllerRoute(
     name: "default",
-    pattern: "api/{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllers();
+    pattern: "api/{controller=Home}/{action=Index}/{id?}"); // APIリクエストを受け付け
 
 // SPA設定（APIルーティングの後に配置）
 app.UseSpa(spa =>
@@ -106,10 +90,12 @@ app.UseSpa(spa =>
 
     if (app.Environment.IsDevelopment())
     {
+        // Vue.js 開発サーバーのプロキシ設定（Vueの開発サーバーにリクエストを転送）
         spa.UseProxyToSpaDevelopmentServer("http://localhost:8888");
     }
     else
     {
+        // 本番環境でVueの静的ファイルを提供
         app.UseStaticFiles();
     }
 });
