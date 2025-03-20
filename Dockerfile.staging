@@ -9,7 +9,7 @@ COPY ./src/vue /app/
 RUN npm install
 RUN npm run build
 
-RUN ls -al /app/vue/dist
+RUN ls -al /app/vue/
 
 
 # ステージ2: .NET SDK環境の準備
