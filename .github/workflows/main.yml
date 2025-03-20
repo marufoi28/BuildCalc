@@ -23,7 +23,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }} 
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} 
 
       # Dockerをセットアップ
       - name: Set up Docker Buildx
@@ -38,6 +38,11 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: |
           gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
+      
+      # サービスアカウントの確認
+      - name: Check Service Account
+        run: |
+          gcloud auth list
 
       # Artifact RegistryにPush
       - name: Push Docker image to Artifact Registry
