@@ -1,18 +1,24 @@
+// vue/src/App.vue
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <div id="app">
+    <header>
+      <h1>Vue + .NET API Demo</h1>
+    </header>
+    <main>
+      <ApiDemo />
+    </main>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+<script>
+import ApiDemo from "./components/ApiDemo.vue";
 
-export default defineComponent({
+export default {
   name: "App",
   components: {
-    HelloWorld,
+    ApiDemo,
   },
-});
+};
 </script>
 
 <style>
