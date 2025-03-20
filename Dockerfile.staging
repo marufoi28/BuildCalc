@@ -4,7 +4,7 @@ FROM node:22.9-bookworm-slim as node22
 WORKDIR /app/vue
 
 # Vue.jsの依存関係をインストール
-COPY ./src/vue /app/
+COPY ./src/vue /app/vue
 
 RUN npm install
 RUN npm run build
