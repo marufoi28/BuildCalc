@@ -51,25 +51,15 @@ builder.Services.AddSpaStaticFiles(options =>
 
 var app = builder.Build();
 
-// CORSの設定
+// CORS設定
 app.UseCors("AllowVueApp");
 
-// APIルーティング設定（/apiで始まるリクエストをAPIに渡す）
-app.UseRouting();
-
-// APIリクエストのマッピング
-app.MapControllerRoute(
-    name: "default",
-    pattern: "api/{controller=Home}/{action=Index}/{id?}"); // APIリクエストを受け付け
-
-app.UseEndpoints(endpoints =>
- {
-     endpoints.MapControllers();
- });
-
-// 本番環境でVue開発サーバーを起動しないように条件を分ける
+// 開発環境の設定
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
     // 開発環境でVue開発サーバーを起動
     var vueDevServer = new ProcessStartInfo
     {
@@ -85,24 +75,36 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseSpaStaticFiles(); // 本番環境で静的ファイルを提供
+    // 本番環境では静的ファイルハンドリングの前にAPIルーティングを設定
+    app.UseStaticFiles(); // 基本的な静的ファイル
+    app.UseSpaStaticFiles(); // SPA用静的ファイル
 }
 
-// SPA設定（APIルーティングの後に配置）
+// 重要: APIルーティングを先に設定
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    // APIコントローラーを明示的にマッピング
+    endpoints.MapControllers();
+    
+    // 追加のルートも設定
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "api/{controller=Home}/{action=Index}/{id?}");
+});
+
+// APIのルーティングを設定した後にSPAを設定
 app.UseSpa(spa =>
 {
     spa.Options.SourcePath = "vue";
 
     if (app.Environment.IsDevelopment())
     {
-        // Vue.js 開発サーバーのプロキシ設定（Vueの開発サーバーにリクエストを転送）
+        // Vue.js 開発サーバーのプロキシ設定
         spa.UseProxyToSpaDevelopmentServer("http://localhost:8888");
     }
-    else
-    {
-        // 本番環境でVueの静的ファイルを提供
-        app.UseStaticFiles();
-    }
+    // この場所で app.UseStaticFiles() を呼び出さない
 });
 
 app.Run();
