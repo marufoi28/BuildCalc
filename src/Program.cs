@@ -54,6 +54,20 @@ var app = builder.Build();
 // CORS設定
 app.UseCors("AllowVueApp");
 
+// 重要: APIルーティングを先に設定
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    // APIコントローラーを明示的にマッピング
+    endpoints.MapControllers();
+    
+    // 追加のルートも設定
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "api/{controller=Home}/{action=Index}/{id?}");
+});
+
 // 開発環境の設定
 if (app.Environment.IsDevelopment())
 {
@@ -79,20 +93,6 @@ else
     app.UseStaticFiles(); // 基本的な静的ファイル
     app.UseSpaStaticFiles(); // SPA用静的ファイル
 }
-
-// 重要: APIルーティングを先に設定
-app.UseRouting();
-
-app.UseEndpoints(endpoints =>
-{
-    // APIコントローラーを明示的にマッピング
-    endpoints.MapControllers();
-    
-    // 追加のルートも設定
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "api/{controller=Home}/{action=Index}/{id?}");
-});
 
 // APIのルーティングを設定した後にSPAを設定
 app.UseSpa(spa =>
