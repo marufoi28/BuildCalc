@@ -40,7 +40,7 @@ WORKDIR /app
 # .NETプロジェクトをコピーし、復元してビルド
 COPY ./src /app/
 RUN dotnet restore
-RUN dotnet build -c Release
+RUN dotnet build -c Release -o /app/publish
 
 # ステージ3: 最終イメージ（実行環境）
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 as final
