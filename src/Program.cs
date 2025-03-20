@@ -93,6 +93,8 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
+app.MapControllers();
+
 // SPA設定（APIルーティングの後に配置）
 app.UseSpa(spa =>
 {
