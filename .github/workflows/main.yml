@@ -33,6 +33,11 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -f Dockerfile.staging -t ${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.REPOSITORY }}/dotnetvue:latest .
+      
+      # Artifact Registryの認証
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev
 
       # Artifact RegistryにPush
       - name: Push Docker image to Artifact Registry
