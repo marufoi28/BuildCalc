@@ -51,6 +51,7 @@ RUN apt-get update && \
 # .NETランタイムをコピー
 COPY --from=build /usr/share/dotnet /usr/share/dotnet
 COPY --from=build /app/bin/Release/net8.0/publish /app
+COPY --from=node22 /app/vue/dist /app/vue/dist
 
 # フロントエンドのビルド成果物をコピー
 COPY --from=node22 /app/vue/dist /app/wwwroot
