@@ -51,6 +51,22 @@ builder.Services.AddSpaStaticFiles(options =>
 
 var app = builder.Build();
 
+// CORSの設定
+app.UseCors("AllowVueApp");
+
+// APIルーティング設定（/apiで始まるリクエストをAPIに渡す）
+app.UseRouting();
+
+// APIリクエストのマッピング
+app.MapControllerRoute(
+    name: "default",
+    pattern: "api/{controller=Home}/{action=Index}/{id?}"); // APIリクエストを受け付け
+
+app.UseEndpoints(endpoints =>
+ {
+     endpoints.MapControllers();
+ });
+
 // 本番環境でVue開発サーバーを起動しないように条件を分ける
 if (app.Environment.IsDevelopment())
 {
@@ -71,17 +87,6 @@ else
 {
     app.UseSpaStaticFiles(); // 本番環境で静的ファイルを提供
 }
-
-// CORSの設定
-app.UseCors("AllowVueApp");
-
-// APIルーティング設定（/apiで始まるリクエストをAPIに渡す）
-app.UseRouting();
-
-// APIリクエストのマッピング
-app.MapControllerRoute(
-    name: "default",
-    pattern: "api/{controller=Home}/{action=Index}/{id?}"); // APIリクエストを受け付け
 
 // SPA設定（APIルーティングの後に配置）
 app.UseSpa(spa =>
