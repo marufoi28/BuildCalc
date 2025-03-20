@@ -55,7 +55,7 @@ export default {
         const apiUrl =
           process.env.NODE_ENV === "development"
             ? "http://localhost:8080/WeatherForecast"
-            : "https://dotnetvue-630537362311.us-central1.run.app/weatherforest";
+            : "https://dotnetvue-630537362311.us-central1.run.app/WeatherForest";
 
         const response = await fetch(apiUrl);
 
