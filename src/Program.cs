@@ -44,10 +44,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
  
 // SPAの設定 - コメントアウト
-// builder.Services.AddSpaStaticFiles(options => 
-// { 
-//     options.RootPath = "vue/dist"; // ビルドされたVueファイルを格納するパス 
-// }); 
+builder.Services.AddSpaStaticFiles(options => 
+{ 
+    options.RootPath = "vue/dist"; // ビルドされたVueファイルを格納するパス 
+}); 
  
 var app = builder.Build(); 
  
@@ -70,36 +70,36 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(); 
      
     // 開発環境でVue開発サーバーを起動 - コメントアウト
-    // var vueDevServer = new ProcessStartInfo 
-    // { 
-    //     FileName = "npm", 
-    //     Arguments = "run serve", 
-    //     WorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), "vue/"), 
-    //     RedirectStandardOutput = true, 
-    //     RedirectStandardError = true, 
-    //     UseShellExecute = false, 
-    //     CreateNoWindow = true 
-    // }; 
-    // Process.Start(vueDevServer); 
+    var vueDevServer = new ProcessStartInfo 
+    { 
+        FileName = "npm", 
+        Arguments = "run serve", 
+        WorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), "vue/"), 
+        RedirectStandardOutput = true, 
+        RedirectStandardError = true, 
+        UseShellExecute = false, 
+        CreateNoWindow = true 
+    }; 
+    Process.Start(vueDevServer); 
 } 
 else 
 { 
     // 本番環境での静的ファイル設定 - コメントアウト
-    // app.UseStaticFiles(); 
-    // app.UseSpaStaticFiles(); 
+    app.UseStaticFiles(); 
+    app.UseSpaStaticFiles(); 
 } 
  
 // SPAの設定 - コメントアウト
-// app.UseSpa(spa => 
-// { 
-//     spa.Options.SourcePath = "vue"; 
-// 
-//     if (app.Environment.IsDevelopment()) 
-//     { 
-//         // Vue.js 開発サーバーのプロキシ設定 
-//         spa.UseProxyToSpaDevelopmentServer("http://localhost:8888"); 
-//     } 
-// }); 
+app.UseSpa(spa => 
+{ 
+    spa.Options.SourcePath = "vue"; 
+
+    if (app.Environment.IsDevelopment()) 
+    { 
+        // Vue.js 開発サーバーのプロキシ設定 
+        spa.UseProxyToSpaDevelopmentServer("http://localhost:8888"); 
+    } 
+}); 
  
 // 404を返すミドルウェアを追加（API以外のパスで404を返す）
 app.Use(async (context, next) => 
