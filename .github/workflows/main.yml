@@ -37,8 +37,7 @@ jobs:
       # サービスアカウントの認証を明示的に行う
       - name: Authenticate service account
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > /tmp/key.json
-          gcloud auth activate-service-account --key-file=/tmp/key.json
+          gcloud auth configure-docker ${{ secrets.REGION }}-docker.pkg.dev --quiet
       
       # サービスアカウントの確認
       - name: Check Service Account
