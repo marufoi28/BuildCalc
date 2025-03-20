@@ -93,6 +93,10 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "api/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllers();
 
 // SPA設定（APIルーティングの後に配置）
