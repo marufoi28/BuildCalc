@@ -38,7 +38,7 @@ RUN dotnet restore /app/BuildCalc.sln
 RUN dotnet build /app/BuildCalc.sln -c Release
 
 # ステージ3: 最終イメージ（実行環境）
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-slim as final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 as final
 
 # 必要なツールやライブラリをインストール
 RUN apt-get update && \
