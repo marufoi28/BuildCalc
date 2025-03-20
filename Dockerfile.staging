@@ -9,9 +9,6 @@ COPY ./src/vue /app/vue
 RUN npm install
 RUN npm run build
 
-RUN ls -al /app/vue/
-RUN ls -al /app/
-
 # ステージ2: .NET SDK環境の準備
 FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
 
@@ -40,7 +37,7 @@ WORKDIR /app
 # .NETプロジェクトをコピーし、復元してビルド
 COPY ./src /app/
 RUN dotnet restore
-RUN dotnet build -c Release -o /app/publish
+RUN dotnet build -c Release -o /app/bin/Release/net8.0/publish
 
 # ステージ3: 最終イメージ（実行環境）
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 as final
