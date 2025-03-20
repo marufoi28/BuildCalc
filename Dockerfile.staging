@@ -1,22 +1,61 @@
+# ステージ1: Vue.jsアプリのビルド
 FROM node:22.9-bookworm-slim as node22
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+WORKDIR /app/vue
+
+# Vue.jsの依存関係をインストール
+COPY ./src/vue/package.json /app/vue/
+RUN npm install
+
+# ステージ2: .NET SDK環境の準備
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
 
 RUN apt-get update && \
     apt-get install -y git vim
 
+# Node.jsとnpmをインストール
 COPY --from=node22 /usr/local/bin/node /usr/local/bin/node
 COPY --from=node22 /usr/local/lib/node_modules /usr/local/lib/node_modules
 
+# シンボリックリンクの作成
 RUN ln -s /usr/local/bin/node /usr/local/bin/nodejs && \
     ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
     ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npx
 
+# .NETツールをインストール
 RUN dotnet tool install --global dotnet-ef --version 8.0
 RUN dotnet tool install -g dotnet-aspnet-codegenerator --version 8.0
 
+# 環境変数設定
 RUN export PATH=$HOME/.dotnet/tools:$PATH
 
-WORKDIR /app/vue
-COPY ./src/vue/package.json /app/vue/
-RUN npm install
+# 作業ディレクトリを設定
+WORKDIR /app
+
+# .NETプロジェクトをコピーし、復元してビルド
+COPY ./src /app/
+RUN dotnet restore /app/BuildCalc.sln
+RUN dotnet build /app/BuildCalc.sln -c Release
+
+# ステージ3: 最終イメージ（実行環境）
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-slim as final
+
+# 必要なツールやライブラリをインストール
+RUN apt-get update && \
+    apt-get install -y git vim
+
+# .NETランタイムをコピー
+COPY --from=build /usr/share/dotnet /usr/share/dotnet
+COPY --from=build /app/bin/Release/net8.0/publish /app
+
+# フロントエンドのビルド成果物をコピー
+COPY --from=node22 /app/vue/dist /app/wwwroot
+
+# 作業ディレクトリ
+WORKDIR /app
+
+# アプリケーションポート設定
+EXPOSE 8080
+
+# アプリケーションの起動コマンド
+ENTRYPOINT ["dotnet", "BuildCalc.dll"]
