@@ -24,6 +24,9 @@ RUN ln -s /usr/local/bin/node /usr/local/bin/nodejs && \
     ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
     ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npx
 
+# 作業ディレクトリを設定
+WORKDIR /app
+
 # .NETツールをインストール
 RUN dotnet tool install --global dotnet-ef --version 8.0
 RUN dotnet tool install -g dotnet-aspnet-codegenerator --version 8.0
@@ -31,13 +34,12 @@ RUN dotnet tool install -g dotnet-aspnet-codegenerator --version 8.0
 # 環境変数設定
 RUN export PATH=$HOME/.dotnet/tools:$PATH
 
-# 作業ディレクトリを設定
-WORKDIR /app
-
 # .NETプロジェクトをコピーし、復元してビルド
+COPY ./src/BuildCalc.csproj /app/
+RUN dotnet restore "BuildCalc.csproj"
+
 COPY ./src /app/
-RUN dotnet restore
-RUN dotnet build -c Release -o /app/bin/Release/net8.0/publish
+RUN dotnet publish "BuildCalc.csproj" -c Release -o /app/publish
 
 # ステージ3: 最終イメージ（実行環境）
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 as final
@@ -48,13 +50,12 @@ RUN apt-get update && \
 
 # .NETランタイムをコピー
 COPY --from=build /usr/share/dotnet /usr/share/dotnet
-COPY --from=build /app/bin/Release/net8.0/publish /app
-
-# フロントエンドのビルド成果物をコピー
-COPY --from=node22 /app/vue/dist /app/wwwroot
+COPY --from=node22 /app/vue/dist /app/vue/dist
 
 # 作業ディレクトリ
 WORKDIR /app
+
+COPY --from=build /app/publish/ .
 
 # アプリケーションポート設定
 EXPOSE 8080
