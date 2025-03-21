@@ -17,6 +17,6 @@ RUN dotnet tool install -g dotnet-aspnet-codegenerator --version 8.0
 
 RUN export PATH=$HOME/.dotnet/tools:$PATH
 
-WORKDIR /workspaces/vue
-COPY ./src/vue/package.json /workspaces/vue/
+WORKDIR /workspace/src/vue
+COPY ./src/vue/package.json .
 RUN npm install
