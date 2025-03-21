@@ -54,7 +54,7 @@ export default {
         // APIのURLを指定 - 開発環境と本番環境で変わる可能性があります
         const apiUrl =
           process.env.NODE_ENV === "development"
-            ? "http://localhost:8080/WeatherForecast"
+            ? "http://localhost:8080/api/WeatherForecast"
             : "https://dotnetvue-630537362311.us-central1.run.app/api/weatherforecast";
 
         const response = await fetch(apiUrl);

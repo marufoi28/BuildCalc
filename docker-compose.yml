@@ -10,7 +10,7 @@ services:
     depends_on:
       - buildcalc_db
     volumes:
-      - ./src:/app
+      - ./:/workspace
     tty:
      true
     
