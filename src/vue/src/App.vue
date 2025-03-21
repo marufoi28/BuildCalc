@@ -1,33 +1,32 @@
 // vue/src/App.vue
+<script setup lang="ts">
+import MainTodo from '@/components/MainTodo.vue';
+import TheFooter from '@/components/TheFooter.vue';
+import TheHeader from '@/components/TheHeader.vue';
+
+</script>
 <template>
-  <div id="app">
-    <header>
-      <h1>Vue + .NET API Demo</h1>
-    </header>
-    <main>
-      <ApiDemo />
-    </main>
+  <div class="wrap">
+    <TheHeader />
+    <main class="main"><MainTodo /></main>
+    <TheFooter />
   </div>
 </template>
 
-<script>
-import ApiDemo from "./components/ApiDemo.vue";
+<style scoped>
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 90vh;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+}
 
-export default {
-  name: "App",
-  components: {
-    ApiDemo,
-  },
-};
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.main {
+  flex: 1;
+  padding: 16px;
 }
 </style>
