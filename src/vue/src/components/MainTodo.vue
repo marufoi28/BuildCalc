@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useTodoList } from '@/composables/useTodoList';
+import BasseButton from '@/components/BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 
-const todo = ref<string | undefind>();
+const todo = ref<string | undefined>();
 const isEdit = ref(false);
-const { todoList, add, show, edit, del} = useTodoList();
+const { todoList, add, show, edit, del, check, countFin } = useTodoList();
 
 const addTodo = () => {
     if(!todo.value) return;
@@ -30,18 +32,33 @@ const deleteTodo = (id: number) => {
     isEdit.value = false;
     del(id);
 }
+
+const changeCheck = (id: number) => {
+    check(id);
+}
+
+const countFinMethod = () => {
+    console.log('method');
+    const finArr = todoList.value.filter((todo) => todo.checked);
+    return finArr.length;
+}
+
+const test = () => {
+    console.log('test');
+}
 </script>
 
 <template>
     <div>
         <input type="text" class="todo_input" v-model="todo" placeholder="+ TODOを入力">
         <button class="btn green" @click="editTodo" v-show="isEdit">変更</button>
-        <button class="btn" @click="addTodo" v-show="!isEdit">追加</button>
+        <BaseButton color="blue" @on-click="test">追加</BaseButton>
+        <BaseButton color="green">編</BaseButton>
     </div>
     <div class="box_list">
         <div class="todo_list" v-for="todo in todoList" :key="todo.id">
-            <div class="todo">
-                <input type="checkbox" class="check" />
+            <div class="todo" :class="{ fin: todo.checked }">
+                <input type="checkbox" class="check" @change="changeCheck(todo.id)" :checked="todo.checked"/>
                 <label>{{ todo.task }}</label>
             </div>
             <div class="btns">
@@ -49,6 +66,10 @@ const deleteTodo = (id: number) => {
                 <button class="btn pink" @click="deleteTodo(todo.id)">削</button>
             </div>
         </div>
+    </div>
+    <div class="finCount">
+        <span>完了:{{ countFin }}、</span>
+        <span>未完了:{{ todoList.length - countFin }}</span>
     </div>
 </template>
 
@@ -112,5 +133,11 @@ const deleteTodo = (id: number) => {
 
 .pink {
     background-color: #ff4081;
+}
+
+.fin {
+    color: #777;
+    text-decoration: line-through;
+    background-color: #ddd;
 }
 </style>
