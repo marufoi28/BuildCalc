@@ -1,21 +1,21 @@
 <script setup lang="ts">
 type Props = {
-    color: string;
+    color: 'blue' | 'green' | 'pink';
 }
 
 type Emits = {
-    'on-click': [void];
+    'on-click': [ str: string, id: number];
 }
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const handleClick = () => {
-    emit('on-click');
+const handleClick = (str: string, id: number) => {
+    emit('on-click', str, id);
 }
 </script>
 
 <template>
-    <button class="btn" :class="color" @click="handleClick"><slot /></button>
+    <button class="btn" :class="color" @click="handleClick('あああ', 123)"><slot /></button>
 </template>
 
 <style scoped>
