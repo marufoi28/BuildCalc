@@ -1,7 +1,7 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
-export const useTodoList = (id: number) => {
-    const todoList = ref<{ id: number; task: string}[]>([]);
+export const useTodoList = () => {
+    const todoList = ref<{ id: number; task: string; checked: boolean}[]>([]);
     const ls = localStorage.todoList;
 
     todoList.value = ls ? JSON.parse(ls) : [];
@@ -49,9 +49,27 @@ export const useTodoList = (id: number) => {
     const add = (task: string) => {
         const id = new Date().getTime();
 
-        todoList.value.push({ id: id, task: task})
+        todoList.value.push({ id: id, task: task, checked: false })
 
         localStorage.todoList = JSON.stringify(todoList.value);
     }
-    return { todoList, add, show, edit, del };
+
+    const check = (id: number) => {
+        const todo = findById(id);
+        const idx = findIndexById(id);
+
+        if(todo){
+            todo.checked = !todo.checked;
+            todoList.value.splice(idx, 1, todo);
+            localStorage.todoList = JSON.stringify(todoList.value);
+        }
+    };
+
+    const countFin = computed(() => {
+        console.log('computed');
+        const finArr = todoList.value.filter((todo) => todo.checked);
+        return finArr.length;
+    })
+
+    return {todoList, add, show, edit, del, check, countFin};
 }
